@@ -1,0 +1,17 @@
+{{#link-to "employees.show" employee.id}}
+<div class="listing">
+    <h3>{{employee.title}} {{employee.firstName}} {{employee.surName}}</h3>
+    <div class="detail">
+        <span>Date of Birth:</span> {{employee.dateBirth}}
+    </div>
+    <div class="detail">
+        <span>Age:</span> {{employee.age}}
+    </div>
+    <div class="detail">
+        <span>Gender:</span> {{employee.gender}}
+    </div>
+    <div class="detail">
+        <span>Salary:</span> {{employee.salary}}
+    </div>
+</div>
+{{/link-to}}

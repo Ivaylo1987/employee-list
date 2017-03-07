@@ -1,0 +1,10 @@
+<div>
+    {{#list-filter filter =(action 'filterByNames') as |employees|}}
+    <ul class="results">
+        {{#each employees as |employeeItem|}}
+        <li> {{employee-listing employee = employeeItem}} </li>
+        {{/each}}
+    </ul>
+    {{/list-filter}}
+</div>
+{{outlet}}
