@@ -268,12 +268,3 @@ p {
 .relative {
   position: relative;
 }
-
-.tomster {
-    background: url(http://emberjs.com/images/tomsters/teaching.png);
-    background-size: contain;
-    background-repeat: no-repeat;
-    height: 160px;
-    width: 150px;
-}
-
