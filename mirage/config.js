@@ -509,11 +509,15 @@ export default function () {
 
   this.get('/employees', function (db, request) {
     let queryParam = request.queryParams.name;
+    let queryParamIsIn = (name) => {
+      return name.toLowerCase().indexOf(queryParam.toLowerCase()) !== -1;
+    };
 
     if (queryParam !== undefined) {
       let filteredEmployees = employees.filter(emp => {
-        let fullName = emp.attributes.firstName.concat(" " + emp.attributes.surName);
-        return fullName.toLowerCase().indexOf(queryParam.toLowerCase()) !== -1;
+        let firstName = emp.attributes.firstName;
+        let surName = emp.attributes.surName;
+        return queryParamIsIn(firstName) || queryParamIsIn(surName);
       });
 
       return { data: filteredEmployees };
