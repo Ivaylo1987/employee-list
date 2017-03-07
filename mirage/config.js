@@ -512,7 +512,7 @@ export default function () {
 
     if (queryParam !== undefined) {
       let filteredEmployees = employees.filter(emp => {
-        let fullName = emp.attributes.firstName.concat(emp.attributes.surName);
+        let fullName = emp.attributes.firstName.concat(" " + emp.attributes.surName);
         return fullName.toLowerCase().indexOf(queryParam.toLowerCase()) !== -1;
       });
 
