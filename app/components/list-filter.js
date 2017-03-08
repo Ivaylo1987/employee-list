@@ -2,6 +2,8 @@ import Ember from 'ember';
 
 export default Ember.Component.extend({
     searchInput: '',
+    asyncOp: {},
+
     init() {
         this._super(...arguments);
         this.set('result', []);
@@ -15,10 +17,13 @@ export default Ember.Component.extend({
             };
 
             if (!isOnlyWhiteSpace(inputValue)) {
-                filter(inputValue).then(items => this.set('result', items));
+                let prom = filter(inputValue).then(items => this.set('result', items));
+                this.set('asyncOp', prom);
             }
             else {
-                this.set('result', Ember.A([]));
+                Promise.all([this.get('asyncOp')]).then(value => {
+                    this.set('result', Ember.A([]));
+                });
             }
         }
     }
