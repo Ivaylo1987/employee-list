@@ -163,6 +163,7 @@ p {
 
 .jumbo p {
   margin-bottom: 25px;
+  opacity: 0.6;
 }
 
 .jumbo img {
@@ -267,4 +268,13 @@ p {
 
 .relative {
   position: relative;
+}
+
+.else {
+ text-decoration: none;
+  font-size: 0.5em;
+  text-align: center;
+  padding: 15px;
+  color: #599ccc;
+  opacity: 1;
 }
