@@ -517,7 +517,9 @@ export default function () {
       let filteredEmployees = employees.filter(emp => {
         let firstName = emp.attributes.firstName;
         let surName = emp.attributes.surName;
-        return queryParamIsIn(firstName) || queryParamIsIn(surName);
+        let fullName = firstName + ' ' + surName;
+        
+        return queryParamIsIn(fullName);
       });
 
       return { data: filteredEmployees };

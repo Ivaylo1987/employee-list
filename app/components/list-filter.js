@@ -10,11 +10,15 @@ export default Ember.Component.extend({
         runFilter() {
             let filter = this.get('filter');
             let inputValue = this.get('searchInput');
-            if (!inputValue) {
-                this.set('result', []);
+            let isOnlyWhiteSpace = (str) => {
+                return !str.trim();
+            };
+
+            if (!isOnlyWhiteSpace(inputValue)) {
+                filter(inputValue).then(items => this.set('result', items));
             }
             else {
-                filter(inputValue).then(items => this.set('result', items));
+                this.set('result', Ember.A([]));
             }
         }
     }
