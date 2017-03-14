@@ -120,6 +120,8 @@ eval \"$NODE_EXE\" -v
 echo -n "Using npm "
 eval $NPM_CMD -v
 
+ember -v
+
 # echo -n "Using bower "
 # eval $BOWER_CMD -v
 
@@ -130,9 +132,9 @@ eval $NPM_CMD -v
 # Build
 # -----
 
-echo Cleaning Cache
-eval $NPM_CMD cache clean
-exitWithMessageOnError "npm cache cleaning failed"
+# echo Cleaning Cache
+# eval $NPM_CMD cache clean
+# exitWithMessageOnError "npm cache cleaning failed"
 
 echo Installing npm modules
 eval $NPM_CMD install --no-optional --no-bin-links
