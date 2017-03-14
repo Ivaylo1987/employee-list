@@ -22,7 +22,8 @@ exitWithMessageOnError () {
 # Verify node.js installed
 hash node 2>/dev/null
 exitWithMessageOnError "Missing node.js executable, please install node.js, if already installed make sure it can be reached from current environment."
-
+node -v
+npm-v
 # Verify that we have access to tar
 hash tar 2> /dev/null
 exitWithMessageOnError "Missing tar. I figured as much."
@@ -30,7 +31,7 @@ exitWithMessageOnError "Missing tar. I figured as much."
 # Setup
 # -----
 echo Copy assets to $DEPLOYMENT_TEMP for build
-tar cf - --exclude=node_modules --exclude=bower_components --exclude=tmp --exclude=.git . | (cd $DEPLOYMENT_TEMP && tar xvf - )
+tar cf - --exclude=node_modules --exclude=bower_components --exclude=dist --exclude=tmp --exclude=.git . | (cd $DEPLOYMENT_TEMP && tar xvf - )
 exitWithMessageOnError "Failed to create and extract tarball"
 
 echo Switch to the temp directory
@@ -47,7 +48,7 @@ SCRIPT_DIR="${SCRIPT_DIR%/*}"
 ARTIFACTS=$SCRIPT_DIR/../artifacts
 KUDU_SYNC_CMD=${KUDU_SYNC_CMD//\"}
 NODE_EXE="$PROGRAMFILES\\nodejs\\6.9.1\\node.exe"
-NPM_CMD="\"$NODE_EXE\" \"$PROGRAMFILES\\npm\\3.10.8\\node_modules\\npm\\bin\\npm-cli.js\""
+NPM_CMD="\"$NODE_EXE\" \"$PROGRAMFILES\\npm\\3.3.9\\node_modules\\npm\\bin\\npm-cli.js\""
 NODE_MODULES_DIR="$APPDATA\\npm\\node_modules"
 
 EMBER_PATH="$NODE_MODULES_DIR\\ember-cli\\bin\\ember"
