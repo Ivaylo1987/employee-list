@@ -51,11 +51,11 @@ NPM_CMD="\"$NODE_EXE\" \"$PROGRAMFILES\\npm\\3.3.9\\node_modules\\npm\\bin\\npm-
 NODE_MODULES_DIR="$APPDATA\\npm\\node_modules"
 
 EMBER_PATH="$NODE_MODULES_DIR\\ember-cli\\bin\\ember"
-BOWER_PATH="$NODE_MODULES_DIR\\bower\\bin\\bower"
+# BOWER_PATH="$NODE_MODULES_DIR\\bower\\bin\\bower"
 AZUREDEPLOY_PATH="$NODE_MODULES_DIR\\ember-cli-azure-deploy\\bin\\azure-deploy"
 
 EMBER_CMD="\"$NODE_EXE\" \"$EMBER_PATH\""
-BOWER_CMD="\"$NODE_EXE\" \"$BOWER_PATH\""
+# BOWER_CMD="\"$NODE_EXE\" \"$BOWER_PATH\""
 AZUREDEPLOY_CMD="\"$NODE_EXE\" \"$AZUREDEPLOY_PATH\""
 
 if [[ ! -n "$DEPLOYMENT_SOURCE" ]]; then
@@ -121,8 +121,8 @@ eval \"$NODE_EXE\" -v
 echo -n "Using npm "
 eval $NPM_CMD -v
 
-echo -n "Using bower "
-eval $BOWER_CMD -v
+# echo -n "Using bower "
+# eval $BOWER_CMD -v
 
 echo -n "Using ember-cli-azure-deploy "
 eval $AZUREDEPLOY_CMD -v
@@ -139,8 +139,8 @@ echo Installing npm modules
 eval $NPM_CMD install --no-optional --no-bin-links
 exitWithMessageOnError "npm install failed"
 
-echo Installing bower dependencies
-eval $BOWER_CMD install
+# echo Installing bower dependencies
+# eval $BOWER_CMD install
 exitWithMessageOnError "bower install failed"
 
 echo Build the dist folder
