@@ -5,6 +5,21 @@
 # Version: 0.1.11
 # ----------------------
 
+# Variable Setup
+# --------------
+SCRIPT_DIR="${BASH_SOURCE[0]%\\*}"
+SCRIPT_DIR="${SCRIPT_DIR%/*}"
+ARTIFACTS=$SCRIPT_DIR/../artifacts
+KUDU_SYNC_CMD=${KUDU_SYNC_CMD//\"}
+NODE_EXE="$PROGRAMFILES\\nodejs\\6.9.1\\node.exe"
+NPM_CMD="\"$NODE_EXE\" \"$PROGRAMFILES\\npm\\3.10.8\\node_modules\\npm\\bin\\npm-cli.js\""
+NODE_MODULES_DIR="$APPDATA\\npm\\node_modules"
+
+EMBER_PATH="$NODE_MODULES_DIR\\ember-cli\\bin\\ember"
+# BOWER_PATH="$NODE_MODULES_DIR\\bower\\bin\\bower"
+GRUNT_PATH="$NODE_MODULES_DIR\\grunt-cli\\bin\\grunt"
+PHANTOMJS_PATH="$NODE_MODULES_DIR\\phantomjs\\bin\\phantomjs"
+
 # Helpers
 # -------
 
@@ -16,17 +31,46 @@ exitWithMessageOnError () {
   fi
 }
 
+# getGithubStatus () {
+#   GIT_REVISION=`git rev-parse HEAD`
+#   curl -ks -o tmp/status.json https://api.github.com/repos/CrshOverride/EmberTodo/commits/$GIT_REVISION/status
+#   GITHUB_STATUS=`"$NODE_EXE" --eval "var json = require('./tmp/status.json'); console.log(json.state);"`
+# }
+
 # Prerequisites
 # -------------
 
 # Verify node.js installed
 hash node 2>/dev/null
 exitWithMessageOnError "Missing node.js executable, please install node.js, if already installed make sure it can be reached from current environment."
-node -v
-npm-v
+
 # Verify that we have access to tar
 hash tar 2> /dev/null
 exitWithMessageOnError "Missing tar. I figured as much."
+
+# Verify that curl is installed
+# hash curl 2> /dev/null
+# exitWithMessageOnError "Missing curl. Who would've thunk it?"
+
+# Wait for GitHub Status
+# ----------------------
+# if [ "$SCM_WAIT_FOR_CI_BEFORE_BUILD" == "1" ]; then
+#   echo Waiting for external CI Systems to update GitHub state
+#   getGithubStatus
+
+#   # Originally looped on 'pending' status but got undefined every once in a while
+#   # so check for the only two statuses that we care about instead.
+#   while [ "$GITHUB_STATUS" != "success" -a "$GITHUB_STATUS" != "failure" ]
+#   do
+#     sleep 15
+#     getGithubStatus
+#   done
+
+#   if [ "$GITHUB_STATUS" == "failure" ]; then
+#     echo "GitHub Status indicates a CI Failure. Aborting the deployment."
+#     exit 1
+#   fi
+# fi
 
 # Setup
 # -----
@@ -43,19 +87,24 @@ if [[ -d node_modules ]]; then
   exitWithMessageOnError "node_modules removal failed"
 fi
 
-SCRIPT_DIR="${BASH_SOURCE[0]%\\*}"
-SCRIPT_DIR="${SCRIPT_DIR%/*}"
-ARTIFACTS=$SCRIPT_DIR/../artifacts
-KUDU_SYNC_CMD=${KUDU_SYNC_CMD//\"}
-NODE_EXE="$PROGRAMFILES\\nodejs\\6.9.1\\node.exe"
-NPM_CMD="\"$NODE_EXE\" \"$PROGRAMFILES\\npm\\3.10.8\\node_modules\\npm\\bin\\npm-cli.js\""
-NODE_MODULES_DIR="$APPDATA\\npm\\node_modules"
+# SCRIPT_DIR="${BASH_SOURCE[0]%\\*}"
+# SCRIPT_DIR="${SCRIPT_DIR%/*}"
+# ARTIFACTS=$SCRIPT_DIR/../artifacts
+# KUDU_SYNC_CMD=${KUDU_SYNC_CMD//\"}
+# NODE_EXE="$PROGRAMFILES\\nodejs\\6.9.1\\node.exe"
+# NPM_CMD="\"$NODE_EXE\" \"$PROGRAMFILES\\npm\\1.4.28\\node_modules\\npm\\bin\\npm-cli.js\""
+# NODE_MODULES_DIR="$APPDATA\\npm\\node_modules"
 
-EMBER_PATH="$NODE_MODULES_DIR\\ember-cli\\bin\\ember"
-AZUREDEPLOY_PATH="$NODE_MODULES_DIR\\ember-cli-azure-deploy\\bin\\azure-deploy"
+# EMBER_PATH="$NODE_MODULES_DIR\\ember-cli\\bin\\ember"
+# # BOWER_PATH="$NODE_MODULES_DIR\\bower\\bin\\bower"
+# GRUNT_PATH="$NODE_MODULES_DIR\\grunt-cli\\bin\\grunt"
+# PHANTOMJS_PATH="$NODE_MODULES_DIR\\phantomjs\\bin\\phantomjs"
+
+# export PATH=$PATH:"/d/local/AppData/npm/node_modules/phantomjs/lib/phantom"
 
 EMBER_CMD="\"$NODE_EXE\" \"$EMBER_PATH\""
-AZUREDEPLOY_CMD="\"$NODE_EXE\" \"$AZUREDEPLOY_PATH\""
+# BOWER_CMD="\"$NODE_EXE\" \"$BOWER_PATH\""
+GRUNT_CMD="\"$NODE_EXE\" \"$GRUNT_PATH\""
 
 if [[ ! -n "$DEPLOYMENT_SOURCE" ]]; then
   DEPLOYMENT_SOURCE=$SCRIPT_DIR
@@ -90,54 +139,44 @@ if [[ ! -n "$KUDU_SYNC_CMD" ]]; then
   fi
 fi
 
-##################################################################################################################################
-# Installing dependencies to take load of ember-cli install
-# -----
+if [[ ! -e "$EMBER_PATH" ]]; then
+  echo Installing ember-cli
+  eval $NPM_CMD install -g ember-cli
+  exitWithMessageOnError "ember-cli failed"
+else
+  echo ember-cli already installed, nothing to do
+fi
 
-echo Installing ember-cli
-eval $NPM_CMD install -g --no-optional --no-bin-links ember-cli
-exitWithMessageOnError "ember-cli failed"
-
-# echo Installing ember-cli-azure-deploy
-# eval $NPM_CMD install -g ember-cli-azure-deploy
-# exitWithMessageOnError "ember-cli-azure-deploy failed"
+# if [[ ! -e "$PHANTOMJS_PATH" ]]; then
+#   echo Installing phantom-js
+#   eval $NPM_CMD install -g phantomjs
+#   exitWithMessageOnError "phantomjs failed"
+# else
+#   echo phantomjs already installed, nothing to do
+# fi
 
 # if [[ ! -e "$BOWER_PATH" ]]; then
 #   echo Installing bower
-#   eval $NPM_CMD install --global --no-optional --no-bin-links bower
+#   eval $NPM_CMD install -g bower
 #   exitWithMessageOnError "bower failed"
 # else
 #   echo bower already installed, nothing to do
 # fi
 
-##################################################################################################################################
-# Print Versions
-# -----
-
-echo -n "Using Node "
-eval \"$NODE_EXE\" -v
-
-echo -n "Using npm "
-eval $NPM_CMD -v
-
-ember -v
-
-# echo -n "Using bower "
-# eval $BOWER_CMD -v
-
-# echo -n "Using ember-cli-azure-deploy "
-# eval $AZUREDEPLOY_CMD -v
+if [[ ! -e "$GRUNT_PATH" ]]; then
+  echo Installing grunt-cli
+  eval $NPM_CMD install -g grunt-cli
+  exitWithMessageOnError "grunt-cli failed"
+else
+  echo grunt-cli already installed, nothing to do
+fi
 
 ##################################################################################################################################
 # Build
 # -----
 
-# echo Cleaning Cache
-# eval $NPM_CMD cache clean
-# exitWithMessageOnError "npm cache cleaning failed"
-
 echo Installing npm modules
-eval $NPM_CMD install --no-optional --no-bin-links
+eval $NPM_CMD install
 exitWithMessageOnError "npm install failed"
 
 # echo Installing bower dependencies
@@ -145,8 +184,8 @@ exitWithMessageOnError "npm install failed"
 # exitWithMessageOnError "bower install failed"
 
 echo Build the dist folder
-ember build -prod
-exitWithMessageOnError "ember-cli-azure-deploy build failed"
+eval $GRUNT_CMD --no-color --verbose
+exitWithMessageOnError "grunt build failed"
 
 echo Copy web.config to the dist folder
 cp web.config dist\
