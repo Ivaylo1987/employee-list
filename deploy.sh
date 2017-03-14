@@ -52,6 +52,7 @@ NPM_CMD="\"$NODE_EXE\" \"$PROGRAMFILES\\npm\\3.10.8\\node_modules\\npm\\bin\\npm
 NODE_MODULES_DIR="$APPDATA\\npm\\node_modules"
 
 EMBER_PATH="$NODE_MODULES_DIR\\ember-cli\\bin\\ember"
+
 # BOWER_PATH="$NODE_MODULES_DIR\\bower\\bin\\bower"
 AZUREDEPLOY_PATH="$NODE_MODULES_DIR\\ember-cli-azure-deploy\\bin\\azure-deploy"
 
